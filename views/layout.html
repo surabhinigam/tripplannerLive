@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html>
-  <title>Trip Planner - {% block title %}{% endblock %}</title>
-  <head>
+<title>Trip Planner - {% block title %}{% endblock %}</title>
+<head>
     <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/style.css" rel="stylesheet">
-  </head>
-  <body>
+</head>
+<body>
 
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand clearfix" href="/"><span class="glyphicon glyphicon-map-marker"></span><span>Trip Planner</span></a>
-      </div>
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
-        </ul>
-      </div>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand clearfix" href="/"><span class="glyphicon glyphicon-map-marker"></span><span>Trip Planner</span></a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </div>
     </div>
 
     {% block content %}
@@ -35,25 +35,43 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfQxgWt-LSZcEmTEN8581Uq9SzZHnpuys"></script>
     <script src="/js/map.js"></script>
     <script type="text/javascript">
-      var hotels = {{ hotels | dump | safe }};
-      var restaurants = {{ restaurants | dump | safe }};
-      var activities = {{ activities | dump | safe }};
-      console.log("hotels are: ", hotels);
+    var hotels = {{ hotels | dump | safe }};
+    var restaurants = {{ restaurants | dump | safe }};
+    var activities = {{ activities | dump | safe }};
 
-      for(var i=0; i<hotels.length; i++){
-       $('#hotel-choices').append('<option>' +hotels[i].name+'</option>');
-      }
+    for(var i=0; i<hotels.length; i++){
+        $('#hotel-choices').append('<option>' +hotels[i].name+'</option>');
+    }
 
-      for(var j=0; j<restaurants.length; j++){
-       $('#restaurant-choices').append('<option>' +restaurants[j].name+'</option>');
-      }
+    for(var j=0; j<restaurants.length; j++){
+        $('#restaurant-choices').append('<option>' +restaurants[j].name+'</option>');
+    }
 
-      for(var k=0; k<activities.length; k++){
-       $('#activity-choices').append('<option>' +activities[k].name+'</option>');
-      }
+    for(var k=0; k<activities.length; k++){
+        $('#activity-choices').append('<option>' +activities[k].name+'</option>');
+    }
+
+    $('#options-panel').on('click', 'button', function() {
+        const selectObject = $($(this).siblings('select')[0]);
+
+        if (selectObject.attr("id").match("hotel")) {
+            $("#hotel-itinerary").html('<div class="itinerary-item"><span class="title">' + selectObject.val() + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
+        } else if (selectObject.attr("id").match("restaurant")) {
+
+            $('#restaurant-itinerary').append('<div class="itinerary-item"><span class="title">' + selectObject.val() +'</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
+        } else if (selectObject.attr("id").match("activity")) {
+
+            $('#activity-itinerary').append('<div class="itinerary-item"><span class="title">' + selectObject.val() +'</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
+        }
 
 
-</script>
+    });
 
-  </body>
+    $('#itinerary').on('click', 'button', function() {
+        $(this).parent().remove();
+    })
+
+    </script>
+
+</body>
 </html>
