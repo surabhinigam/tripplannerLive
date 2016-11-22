@@ -34,6 +34,26 @@
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfQxgWt-LSZcEmTEN8581Uq9SzZHnpuys"></script>
     <script src="/js/map.js"></script>
+    <script type="text/javascript">
+      var hotels = {{ hotels | dump | safe }};
+      var restaurants = {{ restaurants | dump | safe }};
+      var activities = {{ activities | dump | safe }};
+      console.log("hotels are: ", hotels);
+
+      for(var i=0; i<hotels.length; i++){
+       $('#hotel-choices').append('<option>' +hotels[i].name+'</option>');
+      }
+
+      for(var j=0; j<restaurants.length; j++){
+       $('#restaurant-choices').append('<option>' +restaurants[j].name+'</option>');
+      }
+
+      for(var k=0; k<activities.length; k++){
+       $('#activity-choices').append('<option>' +activities[k].name+'</option>');
+      }
+
+
+</script>
 
   </body>
 </html>
