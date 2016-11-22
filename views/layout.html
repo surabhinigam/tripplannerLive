@@ -69,7 +69,24 @@
 
     $('#itinerary').on('click', 'button', function() {
         $(this).parent().remove();
-    })
+    });
+
+    var $numCounter = 1;
+
+    $('#day-add').on('click', function() {
+        $numCounter++;
+        $(this).before('<button class="btn btn-circle day-btn" id="btn-'+$numCounter +'">'+$numCounter+'</button>');
+        $('body').data('foo', 52);
+
+        console.log('DATA:', $('body').data('foo'));
+        $('#itinerary').data('day-2', $(this).html());
+        console.log('ITINERARY:', $('#itinerary').data());
+        console.log('ITINERARY TAG:', $('#itinerary').html());
+        $('#itinerary').html('<div><h4>My Hotel</h4><ul class="list-group"id="hotel-itinerary"></ul></div><div><h4>My Restaurants</h4><ul class="list-group" id="restaurant-itinerary"></ul></div><div><h4>My Activities</h4><ul class="list-group" id="activity-itinerary"></ul></div>'
+        );
+    });
+
+
 
     </script>
 
