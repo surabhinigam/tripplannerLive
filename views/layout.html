@@ -38,6 +38,8 @@
     var hotels = {{ hotels | dump | safe }};
     var restaurants = {{ restaurants | dump | safe }};
     var activities = {{ activities | dump | safe }};
+    var $numCounter = 1;
+    let currentDay = 'btn-1';
 
     for(var i=0; i<hotels.length; i++){
         $('#hotel-choices').append('<option>' +hotels[i].name+'</option>');
@@ -51,6 +53,8 @@
         $('#activity-choices').append('<option>' +activities[k].name+'</option>');
     }
 
+    // Add option Buttons
+        // We need to update the current day
     $('#options-panel').on('click', 'button', function() {
         const selectObject = $($(this).siblings('select')[0]);
 
@@ -67,12 +71,13 @@
 
     });
 
+    // Remove button
     $('#itinerary').on('click', 'button', function() {
         $(this).parent().remove();
+        updateDay(currentDay);
     });
 
-    var $numCounter = 1;
-    let currentDay = 'btn-1';
+
 
     // Create Helper function to update a day with current data
     function updateDay(dayId) {
@@ -86,19 +91,23 @@
 
 
 
+
     // Add Button
+        // Current itinerary needs to be saved in the current day-add
+        // We need to create a new button with the new day
+        // We need to create new entry into the itinerary
+        // Call updateDay on the new entry
     $('#day-add').on('click', function() {
         $numCounter++;
         var $idCounter = $numCounter - 1;
         $(this).before('<button class="btn btn-circle day-btn added-button" id="btn-'+ $numCounter +'">'+$numCounter+'</button>');
-        // Store data 
-        // $('#itinerary').data('btn-' + $idCounter + '', $('#itinerary').html());
-        // console.log(currentDay);
         updateDay(currentDay);
         $('#itinerary').html('<div><h4>My Hotel</h4><ul class="list-group"id="hotel-itinerary"></ul></div><div><h4>My Restaurants</h4><ul class="list-group" id="restaurant-itinerary"></ul></div><div><h4>My Activities</h4><ul class="list-group" id="activity-itinerary"></ul></div>');
+        currentDay = 'btn-' + $numCounter;
+        updateDay(currentDay);
     });
 
-    
+
     // Day Buttons
     $('.day-buttons').on('click', 'button.added-button', function() {
         var $key = $(this).attr('id');
