@@ -35,12 +35,22 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfQxgWt-LSZcEmTEN8581Uq9SzZHnpuys"></script>
     <script src="/js/map.js"></script>
     <script type="text/javascript">
+
+    // Importing all the data from the backend
     var hotels = {{ hotels | dump | safe }};
     var restaurants = {{ restaurants | dump | safe }};
     var activities = {{ activities | dump | safe }};
+
+    // Instanciate the number of days counter
     var $numCounter = 1;
+
+    // Instanciate the current day
     let currentDay = 'btn-1';
 
+    // Instanciate a object data array
+    let dayData = [];
+
+    // Run through each datapoint from the database and create a new option for it
     for(var i=0; i<hotels.length; i++){
         $('#hotel-choices').append('<option>' +hotels[i].name+'</option>');
     }
@@ -53,44 +63,46 @@
         $('#activity-choices').append('<option>' +activities[k].name+'</option>');
     }
 
+    // INTERACTIVE STUFF
+
+    // OPTIONS MENU
     // Add option Buttons
         // We need to update the current day
     $('#options-panel').on('click', 'button', function() {
         const selectObject = $($(this).siblings('select')[0]);
-
+    // 'this' = that button that was clicked
+    // selectObject = Buddhist temple
         if (selectObject.attr("id").match("hotel")) {
             $("#hotel-itinerary").html('<div class="itinerary-item"><span class="title">' + selectObject.val() + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
         } else if (selectObject.attr("id").match("restaurant")) {
-
             $('#restaurant-itinerary').append('<div class="itinerary-item"><span class="title">' + selectObject.val() +'</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
         } else if (selectObject.attr("id").match("activity")) {
-
             $('#activity-itinerary').append('<div class="itinerary-item"><span class="title">' + selectObject.val() +'</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
         }
 
-
-    });
-
-    // Remove button
-    $('#itinerary').on('click', 'button', function() {
-        $(this).parent().remove();
+        // Update the current day in the itinerary data
         updateDay(currentDay);
     });
 
-
+    // Remove button
+        // Remove the 'div' that contains it
+        // Update the current day's data
+    $('#itinerary').on('click', 'button', function() {
+        $(this).parent().remove(); // Removes 'div'
+        updateDay(currentDay); // Update the day
+    });
 
     // Create Helper function to update a day with current data
+        // Takes in an input for the day that we want to update
+        // Update the itinerary data that's currently on the screen to that day
     function updateDay(dayId) {
-        console.log(currentDay);
-        console.log(dayId);
-        $('#itinerary').data(dayId, $('#itinerary').html());
+        // dayId = 'btn-1'
+        // get the index from dayId - 1
+        // at that index, save the data
+        let index = dayId.slice(-1) - 1;
+        dayData[index] = $('#itinerary').html();
+        // $('#itinerary').data(dayId, $('#itinerary').html());
     }
-    // for any interaction, update current day
-    // Any time a day is added, create a key for that day
-
-
-
-
 
     // Add Button
         // Current itinerary needs to be saved in the current day-add
@@ -99,26 +111,67 @@
         // Call updateDay on the new entry
     $('#day-add').on('click', function() {
         $numCounter++;
-        var $idCounter = $numCounter - 1;
-        $(this).before('<button class="btn btn-circle day-btn added-button" id="btn-'+ $numCounter +'">'+$numCounter+'</button>');
-        updateDay(currentDay);
+        updateDay(currentDay); // Update the current day
+
+        $(this).before('<button class="btn btn-circle day-btn added-button" id="btn-'+ $numCounter +'">'+$numCounter+'</button>'); // Adds the new day button
+
+        // Fresh start, blank itinerary
         $('#itinerary').html('<div><h4>My Hotel</h4><ul class="list-group"id="hotel-itinerary"></ul></div><div><h4>My Restaurants</h4><ul class="list-group" id="restaurant-itinerary"></ul></div><div><h4>My Activities</h4><ul class="list-group" id="activity-itinerary"></ul></div>');
+
+        // Set the current day to the new day that we created
         currentDay = 'btn-' + $numCounter;
+
+        // Update that day with the new, fresh data
         updateDay(currentDay);
+        updateDayTitle()
     });
 
 
     // Day Buttons
+        // Store the current information to the current day
+        // Retrieve the data for the day that was clicked
+        // Set the current day to the day that we clicked
     $('.day-buttons').on('click', 'button.added-button', function() {
         var $key = $(this).attr('id');
         updateDay(currentDay);
-        $('#itinerary').html($('#itinerary').data($key))
         currentDay = $key;
+        $('#itinerary').html(dayData[currentDay.slice(-1) - 1]);
+        updateDayTitle();
     });
 
+    // When we click a day button, we need to update the header title
+        // Target the day title element
+        // Figure out what day to change it to - currentDay?
+        // Update the element with that day
 
+        // Call it everyday we click the day-button and plus-button
+    function updateDayTitle() {
+        // Target the day title element
+        $('#day-title-span').text('Day ' + currentDay.slice(-1));
+    }
 
+    // When we click the day title remove button...
+        // Select the current day that it's on
+        // Remove the button for the current day
+        //
+    $('#day-title-remove').on('click', function() {
+        $("#" + currentDay).remove();
+        let removed = dayData.splice(currentDay.slice(-1) - 1, 1);
+        console.log("we removed", removed);
+        currentDay = "btn-" + (currentDay.slice(-1) - 1);
+        $('#itinerary').html(dayData[currentDay.slice(-1) - 1]);
+        updateDayTitle();
+    })
 
+// {
+//     btn-1: data,
+//     btn-3: data
+// }
+//
+// [{}, {}, {}]
+//  0   1   2   3
+
+// { data: }
     </script>
 
 </body>
